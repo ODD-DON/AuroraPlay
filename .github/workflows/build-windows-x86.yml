@@ -25,8 +25,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: 'recursive'
+
+      - name: Restore dependency submodules
+        run: |
+          git clone https://github.com/nemequ/munit.git test\munit
+          git clone https://github.com/nanopb/nanopb.git third-party\nanopb
+          git clone https://github.com/streetpea/jerasure.git third-party\jerasure
+          git clone https://github.com/streetpea/gf-complete.git third-party\gf-complete
+          git clone https://github.com/curl/curl.git third-party\curl
+          git clone https://github.com/streetpea/cpp-steam-tools.git third-party\cpp-steam-tools
 
       - name: Set vcpkg installed dir
         run: |
@@ -35,9 +42,9 @@ jobs:
       - name: Setup Vulkan
         run: |
           $ProgressPreference = 'SilentlyContinue'
-          $ver = (Invoke-WebRequest -Uri "https://vulkan.lunarg.com/sdk/latest.json" | ConvertFrom-Json).windows
+          $ver = (Invoke-RestMethod -Uri "https://vulkan.lunarg.com/sdk/latest.json").windows
           echo Version $ver
-          Invoke-WebRequest -Uri "https://sdk.lunarg.com/sdk/download/$ver/windows/vulkansdk-windows-X64-$ver.exe" -OutFile VulkanSDK.exe
+          Invoke-WebRequest -UseBasicParsing -Uri "https://sdk.lunarg.com/sdk/download/$ver/windows/vulkansdk-windows-X64-$ver.exe" -OutFile VulkanSDK.exe
           echo Downloaded
           .\VulkanSDK.exe --root ${{ env.VULKAN_SDK }}  --accept-licenses --default-answer --confirm-command install
 
