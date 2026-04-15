@@ -1,0 +1,41 @@
+name: Windows Build (AuroraPlay)
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [ "master", "main" ]
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up MSYS2 (for bash/ninja)
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+
+      - name: Show environment
+        run: |
+          uname -a
+          echo %PATH%
+
+      - name: Run repo Windows build script
+        shell: bash
+        run: |
+          set -xe
+          bash scripts/appveyor-win.sh
+
+      - name: Collect artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: auroraplay-artifacts
+          path: |
+            Chiaki
+            Chiaki-PDB
+            build
+            scripts/auroraplay.iss
