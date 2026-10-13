@@ -461,12 +461,17 @@ export function evaluateOpportunity(input: OpportunityInput, settings: BusinessS
   };
 }
 
-/** Re-run the profit model at an arbitrary purchase price (used by negotiation and the calculator). */
-export function profitAtPrice(evaluation: Evaluation, purchasePriceCents: Cents) {
+/**
+ * Net profit for each scenario at an alternative purchase price. Valid when purchase tax is zero
+ * (private-party purchases), where profit moves one-for-one with price.
+ */
+export function profitAtPrice(evaluation: Evaluation, askingPriceCents: Cents, purchasePriceCents: Cents) {
   if (!evaluation.scenariosAtAsking) return null;
+  const delta = purchasePriceCents - askingPriceCents;
   return evaluation.scenariosAtAsking.map((s) => ({
     name: s.name,
-    netProfitCents: s.result.netProfitCents - (purchasePriceCents - s.result.acquisitionCashCents),
-    cashInvestedCents: s.result.cashInvestedCents + (purchasePriceCents - s.result.acquisitionCashCents),
+    netProfitCents: s.result.netProfitCents - delta,
+    cashInvestedCents: s.result.cashInvestedCents + delta,
+    cashRoiBps: s.result.cashInvestedCents + delta > 0 ? Math.round(((s.result.netProfitCents - delta) * 10_000) / (s.result.cashInvestedCents + delta)) : null,
   }));
 }
