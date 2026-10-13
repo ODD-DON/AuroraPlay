@@ -13,7 +13,9 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "db:migrate": "tsx --conditions=react-server scripts/migrate.ts",
-    "worker": "tsx --conditions=react-server scripts/worker.ts"
+    "worker": "tsx --conditions=react-server scripts/worker.ts",
+    "db:reset": "node -e \"require('fs').rmSync('.data/pglite',{recursive:true,force:true});console.log('Local database deleted. It is recreated on next start.')\"",
+    "dev:lan": "next dev -H 0.0.0.0"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.133.0",
