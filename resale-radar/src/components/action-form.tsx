@@ -1,7 +1,7 @@
 "use client";
 
 import { CircleAlert, CircleCheck, Loader2 } from "lucide-react";
-import { useActionState, useEffect, useRef, type ReactNode } from "react";
+import { createContext, startTransition, useActionState, useContext, useEffect, useRef, type ReactNode } from "react";
 import { useFormStatus } from "react-dom";
 import { Button, cn, type buttonVariants } from "./ui";
 import type { VariantProps } from "class-variance-authority";
@@ -16,8 +16,11 @@ export interface ActionResult {
 
 export type FormAction = (prev: ActionResult | null, formData: FormData) => Promise<ActionResult>;
 
+const PendingContext = createContext(false);
+
 export function SubmitButton({ children, pendingLabel, ...props }: { children: ReactNode; pendingLabel?: string } & VariantProps<typeof buttonVariants> & { className?: string; name?: string; value?: string }) {
-  const { pending } = useFormStatus();
+  const status = useFormStatus();
+  const pending = useContext(PendingContext) || status.pending;
   return (
     <Button type="submit" disabled={pending} aria-busy={pending} {...props}>
       {pending ? <Loader2 className="animate-spin" /> : null}
@@ -26,7 +29,11 @@ export function SubmitButton({ children, pendingLabel, ...props }: { children: R
   );
 }
 
-/** Form bound to a server action, with pending state and inline success or error feedback. */
+/**
+ * Form bound to a server action, with pending state and inline success or error feedback.
+ * Submits through onSubmit instead of the `action` prop so React does not reset the fields
+ * to their old defaults after a save; the submitter's name and value are included.
+ */
 export function ActionForm({
   action,
   children,
@@ -40,7 +47,7 @@ export function ActionForm({
   resetOnSuccess?: boolean;
   onSuccess?: (r: ActionResult) => void;
 }) {
-  const [state, formAction] = useActionState(action, null);
+  const [state, formAction, pending] = useActionState(action, null);
   const ref = useRef<HTMLFormElement>(null);
   useEffect(() => {
     if (state?.ok) {
@@ -50,10 +57,20 @@ export function ActionForm({
     }
   }, [state, resetOnSuccess, onSuccess]);
   return (
-    <form ref={ref} action={formAction} className={cn("flex flex-col gap-3", className)}>
-      {children}
-      <FormMessage state={state} />
-    </form>
+    <PendingContext.Provider value={pending}>
+      <form
+        ref={ref}
+        className={cn("flex flex-col gap-3", className)}
+        onSubmit={(e) => {
+          e.preventDefault();
+          const fd = new FormData(e.currentTarget, (e.nativeEvent as SubmitEvent).submitter);
+          startTransition(() => formAction(fd));
+        }}
+      >
+        {children}
+        <FormMessage state={state} />
+      </form>
+    </PendingContext.Provider>
   );
 }
 

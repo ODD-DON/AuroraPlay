@@ -438,7 +438,9 @@ export async function reevaluate(q: Queryable, ownerId: string, id: string, sett
   );
 
   const nextStatus = DECISION_STATUS[ev.decision];
-  if (nextStatus && !LOCKED_STATUSES.has(detail.opportunity.status)) await setStatus(q, ownerId, id, nextStatus, `Engine: ${DECISION_LABELS[ev.decision]}`);
+  const researchStates = new Set<OpportunityStatus>(["researching", "research_required", "identified"]);
+  const pingPong = nextStatus && researchStates.has(nextStatus) && researchStates.has(detail.opportunity.status);
+  if (nextStatus && !pingPong && !LOCKED_STATUSES.has(detail.opportunity.status)) await setStatus(q, ownerId, id, nextStatus, `Engine: ${DECISION_LABELS[ev.decision]}`);
 
   // Alert only when evidence and thresholds are satisfied; hidden gems are low priority research prompts.
   const o = detail.opportunity;

@@ -68,7 +68,7 @@ export function AnalyzerForm({ settings, buyingPowerCents }: { settings: Busines
   const c = ev?.scenariosAtAsking?.find((s) => s.name === "conservative")?.result;
   const b = ev?.scenariosAtAsking?.find((s) => s.name === "base")?.result;
   return (
-    <div className="grid gap-5 lg:grid-cols-[1fr_400px]">
+    <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1fr_400px]">
       <Card>
         <CardHeader title="Inputs" description="Use real sold prices from Terapeak. Low and high default to plus or minus about 10% of the median." />
         <CardBody className="grid gap-4 sm:grid-cols-2">

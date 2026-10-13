@@ -75,6 +75,8 @@ async function act(fn: () => Promise<unknown>, paths: string[] = []): Promise<Ac
     const out = await fn();
     const r: ActionResult = out && typeof out === "object" && "ok" in out ? (out as ActionResult) : { ok: true };
     for (const p of paths) revalidatePath(p);
+    // Navigate on the server: the submitting form may unmount once the data changes.
+    if (r.ok && r.redirectTo) redirect(r.redirectTo);
     return r;
   } catch (e) {
     // Let Next.js redirects (e.g. an expired session sent to /login) propagate.
@@ -602,7 +604,7 @@ export async function recordSaleAction(_: ActionResult | null, fd: FormData): Pr
         tracking: str(fd, "tracking"),
       }),
     );
-    return { ok: true, message: `Sale recorded. Realized profit ${(r.profitCents / 100).toLocaleString("en-US", { style: "currency", currency: "USD" })}${r.feesEstimated ? " (fees estimated)" : ""}.` };
+    return { ok: true, redirectTo: `/inventory/${id}?sold=1${r.feesEstimated ? "&feesEstimated=1" : ""}` };
   }, invPaths(id));
 }
 

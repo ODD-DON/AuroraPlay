@@ -64,3 +64,19 @@ export function PriceCalculator({ evaluation, askingCents, maxCents }: { evaluat
     </div>
   );
 }
+
+/** A disclosure whose open state survives server re-renders (unlike <details open={...}>). */
+export function Disclosure({ summary, defaultOpen = false, children, className }: { summary: React.ReactNode; defaultOpen?: boolean; children: React.ReactNode; className?: string }) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div className={className}>
+      <button type="button" aria-expanded={open} onClick={() => setOpen((o) => !o)} className="flex w-full items-center gap-1.5 text-left text-sm font-medium">
+        <span className={cn("inline-block text-fg-subtle transition-transform", open && "rotate-90")} aria-hidden>
+          <svg width="10" height="10" viewBox="0 0 10 10"><path d="M3 1l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.5" /></svg>
+        </span>
+        {summary}
+      </button>
+      {open ? <div className="mt-3">{children}</div> : null}
+    </div>
+  );
+}

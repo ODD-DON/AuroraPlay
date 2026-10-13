@@ -39,7 +39,7 @@ export default async function AnalyticsPage() {
         </CardBody>
       </Card>
 
-      <div className="grid gap-5 lg:grid-cols-[1fr_360px]">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1fr_360px]">
         <Card>
           <CardHeader icon={<ShoppingBag />} title="Realized profit by month" />
           <CardBody><MonthlyProfitChart data={a.monthly} /></CardBody>
@@ -58,7 +58,7 @@ export default async function AnalyticsPage() {
         </Card>
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         <Card>
           <CardHeader title="Profit by category" />
           {a.byCategory.length === 0 ? <EmptyState title="No sales yet" /> : (
@@ -90,7 +90,7 @@ export default async function AnalyticsPage() {
         </Card>
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         <Card>
           <CardHeader icon={<BrainCircuit />} title="AI performance" description="From your confirmations and rejections of AI hypotheses." />
           <CardBody className="grid grid-cols-3 gap-4">

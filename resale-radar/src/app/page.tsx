@@ -85,7 +85,7 @@ export default async function CommandCenter() {
         </Card>
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-[1fr_340px]">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1fr_340px]">
         <Card>
           <CardHeader
             icon={<Radar />}

@@ -26,7 +26,7 @@ export default async function PickupsPage() {
   return (
     <div className="flex flex-col gap-5 animate-in">
       <PageHeader icon={<Map />} title="Pickup Planner" description="Scheduled pickups, multi-stop routing with shared travel costs, and inspection checklists." />
-      <div className="grid gap-5 lg:grid-cols-[1fr_340px]">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1fr_340px]">
         <div className="flex flex-col gap-5">
           <Card>
             <CardHeader icon={<CalendarClock />} title="Agreed pickups" description={agreed.length ? `Bring ${formatCents(cashNeeded)} total` : undefined} />

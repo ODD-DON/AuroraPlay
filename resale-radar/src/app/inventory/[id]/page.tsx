@@ -17,8 +17,9 @@ import { getOpportunityDetail } from "@/server/services/opportunities";
 export const metadata = { title: "Inventory item" };
 export const dynamic = "force-dynamic";
 
-export default async function InventoryItemPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function InventoryItemPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<Record<string, string | undefined>> }) {
   const { id } = await params;
+  const sp = await searchParams;
   const data = await asOwner(async (q, o) => {
     const inv = await getInventoryItem(q, o, id);
     if (!inv) return null;
@@ -65,7 +66,12 @@ export default async function InventoryItemPage({ params }: { params: Promise<{ 
         {item.opportunity_id ? <LinkButton href={`/deals/${item.opportunity_id}`} variant="secondary">Original research</LinkButton> : null}
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_360px]">
+      {sp.sold && item.actual_profit_cents !== null ? (
+        <Notice tone={item.actual_profit_cents >= 0 ? "positive" : "negative"} title={`Sale recorded. Realized profit ${formatCents(item.actual_profit_cents)}.`}>
+          Revenue, fees, shipping, and cost of goods sold were posted to the ledger.{sp.feesEstimated ? " Fees were estimated from the fee schedule; update them with the actual amount from the order when available." : ""}
+        </Notice>
+      ) : null}
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_360px]">
         <div className="flex flex-col gap-5">
           {!sold && item.status !== "written_off" ? (
             <Card>

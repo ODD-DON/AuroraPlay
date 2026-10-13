@@ -26,7 +26,7 @@ export default async function ResearchPage() {
   return (
     <div className="flex flex-col gap-5 animate-in">
       <PageHeader icon={<Telescope />} title="Market Research" description="Sold-comparable evidence across every deal. Each comp keeps its source, date, and evidence type." />
-      <div className="grid gap-5 lg:grid-cols-[1fr_360px]">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1fr_360px]">
         <Card>
           <CardHeader title="Recorded comparables" description={`${num(stats?.sold)} sold transactions and ${num(stats?.context)} context records across ${num(stats?.deals)} deals`} />
           {comps.length === 0 ? (

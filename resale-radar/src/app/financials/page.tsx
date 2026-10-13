@@ -41,7 +41,7 @@ export default async function FinancialsPage() {
         <Card><CardBody><Stat label="Equity at cost" value={formatCents(s.equityCents)} sub="Cash plus inventory at cost" /></CardBody></Card>
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         <Card>
           <CardHeader title="Profit and loss (all time)" description="Realized only. Unsold inventory is not profit." />
           <CardBody>
@@ -80,7 +80,7 @@ export default async function FinancialsPage() {
         </Card>
       </div>
 
-      <div className="grid gap-5 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
         <Card>
           <CardHeader title="Add capital" />
           <CardBody>

@@ -97,13 +97,14 @@ export function Select({ className, children, ...props }: ComponentProps<"select
   );
 }
 
-export function Field({ label, hint, children, className, htmlFor }: { label: ReactNode; hint?: ReactNode; children: ReactNode; className?: string; htmlFor?: string }) {
+/** The label wraps its control, so the first input inside is always programmatically labeled. */
+export function Field({ label, hint, children, className }: { label: ReactNode; hint?: ReactNode; children: ReactNode; className?: string; htmlFor?: string }) {
   return (
-    <div className={cn("flex flex-col gap-1.5", className)}>
-      <Label htmlFor={htmlFor}>{label}</Label>
+    <label className={cn("flex flex-col gap-1.5", className)}>
+      <span className="text-xs font-medium text-fg-muted">{label}</span>
       {children}
-      {hint ? <p className="text-[11px] leading-snug text-fg-subtle">{hint}</p> : null}
-    </div>
+      {hint ? <span className="text-[11px] leading-snug text-fg-subtle">{hint}</span> : null}
+    </label>
   );
 }
 

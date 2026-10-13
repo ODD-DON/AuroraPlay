@@ -38,7 +38,6 @@ export async function addComparable(q: Queryable, ownerId: string, opportunityId
       c.condition ?? null, c.variant ?? null, c.grade ?? null, c.evidenceType, c.matchConfidence, c.variantMatch, c.conditionMatch, c.notes ?? null],
   );
   await audit(q, ownerId, "comparable.added", "opportunity", opportunityId, { evidenceType: c.evidenceType, totalCents: total });
-  await setStatus(q, ownerId, opportunityId, "researching", null).catch(() => undefined);
   return reevaluate(q, ownerId, opportunityId);
 }
 
@@ -129,6 +128,8 @@ export async function updateFacts(q: Queryable, ownerId: string, opportunityId: 
     params.push(v);
     sets.push(`${col} = $${params.length}`);
   }
+  // Owner-verified identity implies high identification confidence unless a value was given.
+  if (f.identityStatus === "verified" && f.identityConfidence === undefined) sets.push("identity_confidence = greatest(identity_confidence, 0.9)");
   if (sets.length) await q.query(`update opportunities set ${sets.join(", ")}, updated_at = now() where id = $1 and owner_id = $2`, params);
   if (f.askingPriceCents !== undefined) {
     const [o] = await q.query<{ listing_id: string | null }>(`select listing_id from opportunities where id = $1`, [opportunityId]);

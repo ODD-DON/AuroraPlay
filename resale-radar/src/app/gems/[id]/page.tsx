@@ -50,7 +50,7 @@ export default async function GemWorkspace({ params }: { params: Promise<{ id: s
         </CardBody>
       </Card>
 
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px]">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_340px]">
         <div className="flex min-w-0 flex-col gap-5">
           <IdentityPanel d={d} aiAvailable={aiConfigured()} />
           <MarketPanel d={d} />

@@ -8,7 +8,7 @@ import {
   uploadPhotosAction,
 } from "@/app/actions";
 import { ActionForm, SubmitButton } from "@/components/action-form";
-import { CopyButton, PriceCalculator } from "@/components/client-widgets";
+import { CopyButton, Disclosure, PriceCalculator } from "@/components/client-widgets";
 import { ConfidenceMeter, Money, Pct, SeverityBadge } from "@/components/domain";
 import { Badge, Button, Card, CardBody, CardHeader, EmptyState, Field, Input, KeyValue, LinkButton, MoneyInput, Notice, Select, Table, Td, Textarea, Th } from "@/components/ui";
 import type { Evaluation } from "@/domain/evaluate";
@@ -213,9 +213,8 @@ export function MarketPanel({ d }: { d: D }) {
       </Table>
 
       <div className="grid gap-4 border-t border-border p-4 sm:p-5 lg:grid-cols-[1fr_280px]">
-        <details className="group" open={d.comps.length === 0}>
-          <summary className="cursor-pointer text-sm font-medium">Add comparable sale</summary>
-          <ActionForm action={addCompAction} resetOnSuccess className="mt-3">
+        <Disclosure summary="Add comparable sale" defaultOpen={d.comps.length < 8}>
+          <ActionForm action={addCompAction} resetOnSuccess>
             <input type="hidden" name="opportunityId" value={id} />
             <div className="grid gap-3 sm:grid-cols-2">
               <Field label="What sold (exact model, variant, condition)" className="sm:col-span-2"><Input name="productIdentity" required defaultValue={d.opportunity.title} /></Field>
@@ -245,7 +244,7 @@ export function MarketPanel({ d }: { d: D }) {
             </div>
             <div><SubmitButton variant="primary" size="sm">Save comparable</SubmitButton></div>
           </ActionForm>
-        </details>
+        </Disclosure>
         <div>
           <p className="text-sm font-medium">Demand (last 90 days)</p>
           <p className="mb-2 text-xs text-fg-muted">
@@ -508,9 +507,8 @@ export function TravelPanel({ d, routingAvailable }: { d: D; routingAvailable: b
         ) : (
           <Notice tone="caution">Drive time unknown. The profit threshold depends on it, so the deal stays in research until it is added.</Notice>
         )}
-        <details open={!t || t.status === "unknown"}>
-          <summary className="cursor-pointer text-sm font-medium">Update travel</summary>
-          <div className="mt-3 flex flex-col gap-4">
+        <Disclosure summary="Update travel" defaultOpen={!t || t.status === "unknown"}>
+          <div className="flex flex-col gap-4">
             {routingAvailable ? (
               <ActionForm action={routeAction}>
                 <input type="hidden" name="opportunityId" value={id} />
@@ -542,7 +540,7 @@ export function TravelPanel({ d, routingAvailable }: { d: D; routingAvailable: b
               <SubmitButton size="sm" variant="ghost">Seller ships it (no pickup)</SubmitButton>
             </ActionForm>
           </div>
-        </details>
+        </Disclosure>
       </CardBody>
     </Card>
   );

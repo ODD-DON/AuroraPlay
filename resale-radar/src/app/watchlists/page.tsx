@@ -25,7 +25,7 @@ export default async function WatchlistsPage() {
           Automatic searching uses the eBay Browse API, which needs credentials (Settings, Integrations). Facebook Marketplace offers no authorized search API, so for Marketplace keep using its own saved searches and import the listings you get notified about.
         </Notice>
       ) : null}
-      <div className="grid gap-5 lg:grid-cols-[1fr_380px]">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1fr_380px]">
         <Card>
           <CardHeader title="Your watchlists" />
           {lists.length === 0 ? (

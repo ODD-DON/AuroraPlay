@@ -105,6 +105,10 @@
 }
 
 @layer utilities {
+  /* Truncated text inside flex rows must be allowed to shrink, or long titles overflow on phones. */
+  .truncate {
+    min-width: 0;
+  }
   .tabular {
     font-variant-numeric: tabular-nums;
   }
