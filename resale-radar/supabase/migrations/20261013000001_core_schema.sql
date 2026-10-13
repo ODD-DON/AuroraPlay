@@ -1025,9 +1025,10 @@ begin
 end;
 $$;
 
--- Jobs are processed by the worker with the service role only.
+-- Owners can see and enqueue their own jobs; only the worker (service role) updates them.
 alter table background_jobs enable row level security;
 create policy background_jobs_owner_read on background_jobs for select using (owner_id = auth.uid());
+create policy background_jobs_owner_enqueue on background_jobs for insert with check (owner_id = auth.uid());
 
 -- Reference tables are readable by any signed-in user and writable only by the service role.
 alter table financial_accounts enable row level security;

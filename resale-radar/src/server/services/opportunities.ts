@@ -135,7 +135,7 @@ export async function importListing(q: Queryable, ownerId: string, input: Import
     if (a.kind === "relist_or_crosspost" || a.kind === "possible") {
       await q.query(
         `insert into listing_deduplication_links (owner_id, listing_id, duplicate_of_id, kind, signals, score) values ($1,$2,$3,$4,$5,$6) on conflict do nothing`,
-        [ownerId, listingId, r.id, a.kind, a.signals, a.score],
+        [ownerId, listingId, r.id, a.kind, JSON.stringify(a.signals), a.score],
       );
       possibleDuplicates.push({ opportunityId: r.opp_id, title: r.title, signals: a.signals });
     }

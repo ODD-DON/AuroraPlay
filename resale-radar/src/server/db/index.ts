@@ -33,8 +33,16 @@ const ROOT = process.cwd();
 const MIGRATIONS_DIR = path.join(ROOT, "supabase", "migrations");
 const SHIM_DIR = path.join(ROOT, "src", "server", "db");
 
+/**
+ * Arrays bind as Postgres arrays (text[] columns). Plain objects bind as JSON text for jsonb columns.
+ * To store a JSON array in a jsonb column, pass JSON.stringify(value) explicitly.
+ */
 function normalizeParams(params: unknown[] = []): unknown[] {
-  return params.map((p) => (p === undefined ? null : p !== null && typeof p === "object" && !(p instanceof Date) ? JSON.stringify(p) : p));
+  return params.map((p) => {
+    if (p === undefined) return null;
+    if (p === null || typeof p !== "object" || p instanceof Date || Array.isArray(p)) return p;
+    return JSON.stringify(p);
+  });
 }
 
 async function createPostgres(url: string): Promise<Database> {
