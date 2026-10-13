@@ -1,7 +1,7 @@
 import "server-only";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { isLocalMode, LOCAL_OWNER_ID } from "@/server/db";
+import { isLocalMode, LOCAL_OWNER_ID, withOwner, type Queryable } from "@/server/db";
 
 /**
  * Resolves the signed-in owner.
@@ -13,6 +13,17 @@ export async function getOwnerId(): Promise<string> {
   const user = await getSupabaseUser();
   if (!user) redirect("/login");
   return user.id;
+}
+
+export async function getOwnerIdOrNull(): Promise<string | null> {
+  if (isLocalMode()) return LOCAL_OWNER_ID;
+  return (await getSupabaseUser())?.id ?? null;
+}
+
+/** Runs `fn` as the signed-in owner with row-level security enforced. */
+export async function asOwner<T>(fn: (q: Queryable, ownerId: string) => Promise<T>): Promise<T> {
+  const ownerId = await getOwnerId();
+  return withOwner(ownerId, (q) => fn(q, ownerId));
 }
 
 export function supabaseConfigured(): boolean {

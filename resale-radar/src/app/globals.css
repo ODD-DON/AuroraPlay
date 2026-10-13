@@ -1,0 +1,152 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Design tokens. Dark is the default theme (html.dark). Light mode swaps the same tokens.
+ * Color semantics: accent = action, positive = confirmed gains, caution = uncertainty, negative = losses and risks.
+ */
+:root {
+  --bg: oklch(0.985 0.002 260);
+  --bg-subtle: oklch(0.965 0.003 260);
+  --surface: oklch(1 0 0);
+  --surface-2: oklch(0.975 0.003 260);
+  --border: oklch(0.91 0.005 260);
+  --border-strong: oklch(0.84 0.008 260);
+  --fg: oklch(0.2 0.01 260);
+  --fg-muted: oklch(0.47 0.012 260);
+  --fg-subtle: oklch(0.6 0.01 260);
+  --accent: oklch(0.55 0.17 255);
+  --accent-fg: oklch(0.99 0 0);
+  --accent-soft: oklch(0.94 0.04 255);
+  --positive: oklch(0.55 0.14 155);
+  --positive-soft: oklch(0.94 0.05 155);
+  --caution: oklch(0.62 0.14 70);
+  --caution-soft: oklch(0.95 0.06 85);
+  --negative: oklch(0.56 0.19 25);
+  --negative-soft: oklch(0.95 0.04 25);
+  --ring: oklch(0.6 0.15 255 / 0.5);
+  color-scheme: light;
+}
+
+.dark {
+  --bg: oklch(0.155 0.006 265);
+  --bg-subtle: oklch(0.18 0.007 265);
+  --surface: oklch(0.195 0.007 265);
+  --surface-2: oklch(0.225 0.008 265);
+  --border: oklch(0.28 0.009 265);
+  --border-strong: oklch(0.35 0.01 265);
+  --fg: oklch(0.95 0.004 265);
+  --fg-muted: oklch(0.72 0.01 265);
+  --fg-subtle: oklch(0.58 0.01 265);
+  --accent: oklch(0.66 0.15 255);
+  --accent-fg: oklch(0.15 0.01 265);
+  --accent-soft: oklch(0.3 0.06 255);
+  --positive: oklch(0.74 0.15 155);
+  --positive-soft: oklch(0.3 0.06 155);
+  --caution: oklch(0.8 0.14 80);
+  --caution-soft: oklch(0.32 0.06 80);
+  --negative: oklch(0.7 0.17 25);
+  --negative-soft: oklch(0.31 0.07 25);
+  --ring: oklch(0.66 0.15 255 / 0.55);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-subtle: var(--bg-subtle);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-soft: var(--accent-soft);
+  --color-positive: var(--positive);
+  --color-positive-soft: var(--positive-soft);
+  --color-caution: var(--caution);
+  --color-caution-soft: var(--caution-soft);
+  --color-negative: var(--negative);
+  --color-negative-soft: var(--negative-soft);
+  --color-ring: var(--ring);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-mono-face), ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-feature-settings: "cv11", "ss01";
+    -webkit-font-smoothing: antialiased;
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  ::selection {
+    background: var(--accent-soft);
+  }
+}
+
+@layer utilities {
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+  .animate-in {
+    animation: fade-in 180ms ease-out both;
+  }
+  .skeleton {
+    background: linear-gradient(90deg, var(--surface-2) 25%, var(--border) 37%, var(--surface-2) 63%);
+    background-size: 400% 100%;
+    animation: shimmer 1.4s ease infinite;
+  }
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-in,
+  .skeleton {
+    animation: none;
+  }
+}
